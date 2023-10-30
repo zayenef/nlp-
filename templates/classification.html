@@ -1,0 +1,273 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Text Classification</title>
+    <style>
+        /* CSS styles */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            overflow: hidden; /* Prevent horizontal and vertical scrollbars */
+        }
+
+        .container {
+            position: absolute;
+            top: 30%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            max-width: 800px; /* Adjust the width as desired */
+            width: 90%; /* Adjust the width as desired */
+            margin: 0 auto;
+            padding: 60px; /* Increase the padding value for a larger container */
+            background-color: rgba(0, 13, 27, 0.8); /* Updated background color with transparency */
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            border-radius: 5px;
+            text-align: center;
+            z-index: 1; /* Ensure the container is above the background */
+        }
+
+        h1 {
+            color: #fff;
+            opacity: 0;
+            animation: fadeIn 1s 0.5s forwards;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 20px; /* Increase the padding value for a larger input box */
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+
+        input[type="submit"] {
+            background-color: #000d1b;
+            color: #fff;
+            border: 2px solid #fff; /* Add white border */
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        input[type="submit"]:hover {
+            background-color: #003366;
+        }
+
+        .logo {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            width: 70px;
+            height: 70px;
+            background-image: url("{% static 'images/logo-smart3.png' %}");
+            background-size: contain;
+            background-repeat: no-repeat;
+            cursor: pointer;
+        }
+
+        /* Animated Background */
+        .animated-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            z-index: 0; /* Set the background behind the container */
+        }
+
+        .animated-bg img {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            animation: animateBackground 30s linear infinite;
+        }
+
+        @keyframes animateBackground {
+            0% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.05);
+            }
+            100% {
+                transform: scale(1);
+            }
+        }
+
+        /* Add new styles for file input */
+        .file-input {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            margin-top: 30px;
+        }
+
+        .file-input label {
+            color: #fff;
+            font-size: 16px;
+            margin-bottom: 10px;
+        }
+
+        .file-input input[type="file"] {
+            display: none;
+        }
+
+        .file-input input[type="text"] {
+            width: 100%;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+
+        .file-input input[type="submit"] {
+            background-color: #000d1b;
+            color: #fff;
+            border: 2px solid #fff;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .file-input input[type="submit"]:hover {
+            background-color: #003366;
+        }
+
+        /* Add new styles for second choice */
+        .text-input {
+            margin-top: 30px;
+        }
+
+        .text-input label {
+            color: #fff;
+            font-size: 16px;
+            margin-bottom: 10px;
+        }
+
+        .text-input input[type="text"] {
+            width: 100%;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+
+        .loading-animation {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+            z-index: 2;
+        }
+
+        .loading-animation .loading-message {
+            color: #fff;
+            font-size: 24px;
+            position: absolute;
+            top: 220px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        .loading-animation img {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 100px;
+            height: 100px;
+            object-fit: cover;
+            animation: rotate 2s linear infinite;
+        }
+
+        @keyframes rotate {
+            0% {
+                transform: translate(-50%, -50%) rotate(0deg);
+            }
+            100% {
+                transform: translate(-50%, -50%) rotate(360deg);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="animated-bg">
+        <img src="{% static 'images/nlp.gif' %}" alt="Animated Background">
+    </div>
+
+    <a href="https://www.smarte-conseil.fr/fr/" target="_blank">
+        <div class="logo"></div>
+    </a>
+
+    <div class="container">
+        <h1>Big 5 Personality Traits Text Classification</h1>
+        <form method="POST" action="{% url 'classify' %}">
+            {% csrf_token %}
+            <div class="file-input">
+                <label for="file" style="display: flex; align-items: center;">
+                    Select a File to Classify:
+                    <span class="file-emoji" id="file-emoji" onclick="openFileExplorer()">📁</span>
+                </label>
+                <input type="file" id="file" name="file" style="display: none;">
+                <input type="text" id="file-path" name="file-path" placeholder="No file selected" readonly>
+                <input type="submit" id="file-submit" value="Classify" disabled>
+            </div>
+
+            <div class="text-input">
+                <label for="text">Or Type your Text here: <span class="emoji">📝</span></label>
+                <input type="text" id="text" name="text" placeholder="Type your text here">
+                <input type="submit" value="Classify">
+            </div>
+        </form>
+   </div>
+
+    <!-- Add the loading animation -->
+    <div class="loading-animation" id="loading-animation">
+        <p class="loading-message">LOADING...</p>
+        <img src="{% static 'images/20.png' %}" alt="Loading Animation">
+    </div>
+
+    <script>
+        // JavaScript code to handle file input selection
+        const fileInput = document.getElementById('file');
+        const filePathInput = document.getElementById('file-path');
+        const fileSubmit = document.getElementById('file-submit');
+        const loadingAnimation = document.getElementById('loading-animation');
+
+        fileInput.addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            filePathInput.value = file ? file.name : 'No file selected';
+            fileSubmit.disabled = file ? false : true;
+        });
+
+        function openFileExplorer() {
+            document.getElementById('file').click();
+        }
+
+        // Show the loading animation on form submission
+        const form = document.querySelector('form');
+        form.addEventListener('submit', (e) => {
+            loadingAnimation.style.display = 'block';
+        });
+    </script>
+</body>
+</html>

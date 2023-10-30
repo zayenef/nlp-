@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Classification Results</title>
+    <style>
+body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  background: url("/static/images/nlp.gif") no-repeat center center fixed;
+  background-size: cover;
+}
+
+.container {
+  background-color: rgba(0, 13, 27, 0.8);
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+  margin-top: 50px;
+  color: white;
+}
+
+h1 {
+  color: white;
+  text-align: center;
+}
+
+h2 {
+  color: #6b919c; /* Updated color for "Trait Descriptions" */
+}
+
+p {
+  text-align: justify;
+}
+
+table {
+  border-collapse: collapse;
+  margin: 20px auto;
+  width: 80%;
+  color: white;
+}
+
+th,
+td {
+  padding: 10px;
+  border: 1px solid #dddddd;
+  text-align: center;
+}
+
+th {
+  background-color: #f0f0f0;
+  color: black;
+}
+
+.trait-image {
+  width: 80px; /* Updated image size */
+  height: 80px; /* Updated image size */
+}
+
+.trait-name {
+  font-size: 16px;
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+
+.trait-description {
+  font-size: 14px;
+  line-height: 1.4;
+  margin-top: 0;
+}
+
+.chart-container {
+  margin-top: 40px;
+  text-align: center;
+}
+
+.chart-image {
+  max-width: 100%;
+  height: auto;
+}
+
+.chart-title {
+  margin-top: 10px;
+  font-size: 20px;
+  font-weight: bold;
+  text-align: center;
+  color: white;
+}
+
+.return-button {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+.return-button button {
+  padding: 10px 20px;
+  background-color: #f0f0f0;
+  color: black;
+  border: none;
+  cursor: pointer;
+}
+
+.button-container {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+.learn-more-button {
+  display: inline-block;
+  padding: 10px 20px;
+  background-color: #6b919c;
+  color: white;
+  text-decoration: none;
+  border-radius: 4px;
+}
+
+.learn-more-button:hover {
+  background-color: #549cb0;
+}
+
+.return-button {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+.return-button button {
+  padding: 10px 20px;
+  background-color: #549cb0; /* Updated background color */
+  color: white; /* Updated text color */
+  border: none;
+  cursor: pointer;
+  font-size: 14px; /* Updated font size */
+}
+
+.return-button button:hover {
+  background-color: #357c92; /* Updated background color on hover */
+}
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Classification Report</h1>
+        <h2 style="color: #549cb0;">Traits Descriptions</h2>
+     <table class="traits-table">
+  <tr>
+    <td>
+      <img class="trait-image" src="/static/images/11.png" alt="Extraversion">
+    </td>
+    <td>
+      <h2 class="trait-name">Extraversion</h2>
+      <p class="trait-description">Extraversion refers to an individual's preference for social interaction, enthusiasm, and assertiveness. People high in extraversion tend to be outgoing, talkative, and energized by social situations.</p>
+    </td>
+  </tr>
+  <tr>
+    <td>
+      <img class="trait-image" src="/static/images/2.png" alt="Neuroticism">
+    </td>
+    <td>
+      <h2 class="trait-name">Neuroticism</h2>
+      <p class="trait-description">Neuroticism represents the degree of emotional instability and negative affect experienced by an individual. People high in neuroticism may be prone to experiencing anxiety, worry, and mood swings.</p>
+    </td>
+  </tr>
+  <tr>
+    <td>
+      <img class="trait-image" src="/static/images/3.png" alt="Agreeableness">
+    </td>
+    <td>
+      <h2 class="trait-name">Agreeableness</h2>
+      <p class="trait-description">Agreeableness reflects an individual's tendency to be compassionate, cooperative, and considerate towards others. People high in agreeableness are empathetic, understanding, and value harmonious relationships.</p>
+    </td>
+  </tr>
+  <tr>
+    <td>
+      <img class="trait-image" src="/static/images/4.png" alt="Conscientiousness">
+    </td>
+    <td>
+      <h2 class="trait-name">Conscientiousness</h2>
+      <p class="trait-description">Conscientiousness pertains to the degree of organization, responsibility, and self-discipline displayed by an individual. People high in conscientiousness are reliable, self-motivated, and diligent in their work.</p>
+    </td>
+  </tr>
+  <tr>
+    <td>
+      <img class="trait-image" src="/static/images/5.png" alt="Openness">
+    </td>
+    <td>
+      <h2 class="trait-name">Openness</h2>
+      <p class="trait-description">Openness refers to an individual's inclination towards new experiences, creativity, and intellectual curiosity. People high in openness are imaginative, open-minded, and receptive to new ideas.</p>
+    </td>
+  </tr>
+</table>
+
+<div class="button-container">
+  <a href="https://www.simplypsychology.org/big-five-personality.html" class="learn-more-button" target="_blank">Learn More</a>
+</div>
+
+<h2 style="color: #549cb0;">Traits Classification</h2>
+        <p>For the provided text input, here are the traits classifications:</p>
+        <table>
+            <tr>
+                <th style="color: black;">Trait</th>
+                <th style="color: black;">Probability</th>
+            </tr>
+            {% for trait, result in classification_results_percentage.items %}
+            <tr>
+                <td>
+                    {% if trait == 'cEXT' %}
+                        Extraversion
+                    {% elif trait == 'cNEU' %}
+                        Neuroticism
+                    {% elif trait == 'cAGR' %}
+                        Agreeableness
+                    {% elif trait == 'cCON' %}
+                        Conscientiousness
+                    {% elif trait == 'cOPN' %}
+                        Openness
+                    {% endif %}
+                </td>
+                <td>{{ result }}</td>
+            </tr>
+            {% endfor %}
+        </table>
+
+        <p>
+            The table above shows the classification results, indicating the probability of each trait being present based on the analysis. The traits are listed on the left, and the corresponding percentage represents the likelihood of each trait being exhibited by the individual. Higher percentages indicate a higher probability of possessing that particular trait.
+        </p>
+
+        <div class="chart-container">
+            <h2 class="chart-title" style="color: #549cb0;">Radar Chart</h2>
+            <img class="chart-image" src="data:image/png;base64,{{ radar_chart_base64 }}" alt="Radar Chart">
+        </div>
+
+        <div class="chart-container">
+            <h2 class="chart-title" style="color: #549cb0;">Pie Chart</h2>
+            <p>
+                The pie chart represents the distribution of traits based on the percentage of each trait mentioned in the input paragraph. Each trait is assigned a portion of the pie based on its relative frequency in the text.
+            </p>
+            <p>
+                The size of each segment corresponds to the percentage of the respective trait. The larger the segment, the higher the percentage of individuals exhibiting that trait.
+            </p>
+            <img class="chart-image"src="data:image/png;base64,{{ pie_chart_base64 }}" alt="Pie Chart">
+        </div>
+
+        <div class="return-button">
+            <button onclick="window.location.href='/classify/'">Return to Classification</button>
+        </div>
+
+    </div>
+</body>
+</html>
+
